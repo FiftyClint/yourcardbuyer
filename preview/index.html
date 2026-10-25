@@ -1,0 +1,673 @@
+<title>Your Card Buyer</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Sell your sports cards to a buyer. Send photos of a few cards or a whole collection and get a straight offer, with no obligation to sell.">
+
+<meta name="robots" content="noindex">
+<meta property="og:title" content="Your Card Buyer">
+<meta property="og:description" content="Sell your sports cards to a buyer. Send photos of a few cards or a whole collection and get a straight offer, with no obligation to sell.">
+<meta property="og:type" content="website">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800&family=IBM+Plex+Mono:wght@500;600&family=Public+Sans:wght@400;600;700&display=swap">
+<style>
+/*
+ * Layout: one long sell page. A fanned stack of blank trading cards in the hero,
+ * and "How it works" set like the stat box on the back of a baseball card.
+ * Everything else stays quiet: white card stock, navy ink, one red.
+ */
+:root {
+  --paper: #eef1f4;      /* page ground, cool card-stock grey */
+  --stock: #ffffff;      /* raised surfaces: the form, the card back */
+  --ink: #131a2b;        /* text */
+  --muted: #566074;      /* secondary text */
+  --line: #cfd6df;       /* hairlines */
+  --red: #c8102e;        /* the one accent: buttons, card borders */
+  --red-ink: #ffffff;    /* text on red */
+  --blue: #1d4f91;       /* links */
+  --todo-bg: #fff1a8;    /* unfilled facts, preview only */
+  --todo-ink: #4a3b00;
+  --card-photo-a: #d9e2ec;
+  --card-photo-b: #c3cfdc;
+
+  --display: 'Barlow Condensed', 'Arial Narrow', 'Roboto Condensed', sans-serif;
+  --body: 'Public Sans', -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+
+  --step--1: 0.875rem;
+  --step-0: 1rem;
+  --step-1: 1.25rem;
+  --step-2: 1.6rem;
+  --step-3: 2.2rem;
+  --step-4: clamp(2.6rem, 6vw, 4.25rem);
+  --radius: 6px;
+  --measure: 65ch;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0e1320; --stock: #171f31; --ink: #e8ecf3; --muted: #a3adbf; --line: #2b3549;
+    --red: #ff4d61; --red-ink: #1a0207; --blue: #8cb8ff; --todo-bg: #5c4a00; --todo-ink: #fff3b0;
+    --card-photo-a: #26324a; --card-photo-b: #1d2639;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0e1320; --stock: #171f31; --ink: #e8ecf3; --muted: #a3adbf; --line: #2b3549;
+  --red: #ff4d61; --red-ink: #1a0207; --blue: #8cb8ff; --todo-bg: #5c4a00; --todo-ink: #fff3b0;
+  --card-photo-a: #26324a; --card-photo-b: #1d2639;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--body);
+  font-size: var(--step-0);
+  line-height: 1.6;
+}
+a { color: var(--blue); text-underline-offset: 2px; }
+:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
+h1, h2, h3 { font-family: var(--display); line-height: 1.05; text-wrap: balance; margin: 0; letter-spacing: 0.01em; }
+h1 { font-size: var(--step-4); font-weight: 800; text-transform: uppercase; }
+h2 { font-size: var(--step-3); font-weight: 700; text-transform: uppercase; }
+h3 { font-size: var(--step-1); font-weight: 700; }
+p { margin: 0; }
+
+.wrap {
+  width: 100%;
+  max-width: 72rem;
+  margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.section { padding-block: clamp(3rem, 7vw, 5rem); }
+.section-head { display: grid; gap: 0.75rem; max-width: var(--measure); margin-bottom: 2rem; }
+.eyebrow {
+  font-family: var(--mono); font-size: var(--step--1); letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--red); font-weight: 500;
+}
+.lede { font-size: var(--step-1); color: var(--muted); max-width: 46ch; }
+.muted { color: var(--muted); }
+mark.todo {
+  background: var(--todo-bg); color: var(--todo-ink); padding: 0 0.25em; border-radius: 3px;
+  font-family: var(--mono); font-size: 0.85em; font-weight: 500; white-space: normal;
+}
+
+/* Header */
+.site-header { border-bottom: 1px solid var(--line); background: var(--paper); }
+.site-header .wrap { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding-block: 0.9rem; flex-wrap: wrap; }
+.wordmark { display: flex; align-items: center; gap: 0.55rem; text-decoration: none; color: var(--ink); }
+.wordmark-chip {
+  width: 1.5rem; height: 2.1rem; border: 3px solid var(--red); border-radius: 3px; background: var(--stock);
+  display: grid; place-items: end center; padding-bottom: 2px;
+}
+.wordmark-chip::after { content: ""; width: 70%; height: 4px; background: var(--red); border-radius: 1px; }
+.wordmark-text { font-family: var(--display); font-weight: 800; font-size: 1.45rem; text-transform: uppercase; letter-spacing: 0.02em; }
+.nav { display: flex; gap: 1.25rem; align-items: center; flex-wrap: wrap; font-weight: 600; font-size: var(--step--1); }
+.nav a { color: var(--ink); text-decoration: none; }
+.nav a:hover { color: var(--red); }
+
+.button {
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+  background: var(--red); color: var(--red-ink); border: 0; border-radius: var(--radius);
+  font-family: var(--display); font-weight: 700; font-size: 1.2rem; text-transform: uppercase; letter-spacing: 0.04em;
+  padding: 0.7rem 1.4rem; text-decoration: none; cursor: pointer;
+}
+.button:hover { filter: brightness(1.08); }
+.button-small { font-size: 1rem; padding: 0.45rem 0.9rem; }
+.nav .button { color: var(--red-ink); }
+
+/* Hero */
+.hero .wrap { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr); gap: clamp(2rem, 5vw, 4rem); align-items: center; }
+.hero-copy { display: grid; gap: 1.25rem; min-width: 0; }
+.hero-actions { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; }
+.hero-note { font-size: var(--step--1); color: var(--muted); }
+
+.stack { position: relative; height: 22rem; max-width: 100%; }
+.tc {
+  position: absolute; left: 50%; top: 50%;
+  width: 11.5rem; aspect-ratio: 2.5 / 3.5; max-width: 60%;
+  background: var(--stock); border: 7px solid var(--red); border-radius: 8px;
+  box-shadow: 0 10px 24px rgba(10, 18, 35, 0.18);
+  display: grid; grid-template-rows: 1fr auto; padding: 7px; gap: 6px;
+  transform-origin: 50% 85%;
+}
+.tc-photo {
+  border-radius: 3px;
+  background: repeating-linear-gradient(135deg, var(--card-photo-a) 0 10px, var(--card-photo-b) 10px 20px);
+}
+.tc-plate {
+  font-family: var(--display); font-weight: 800; text-transform: uppercase; font-size: 0.95rem;
+  text-align: center; color: var(--ink); line-height: 1.1; padding: 2px 0;
+  border-top: 2px solid var(--ink);
+}
+.tc-plate small { display: block; font-family: var(--mono); font-weight: 500; font-size: 0.6rem; color: var(--muted); letter-spacing: 0.06em; }
+.tc:nth-child(1) { transform: translate(-50%, -50%) rotate(-14deg) translateX(-34%); border-color: var(--blue); }
+.tc:nth-child(2) { transform: translate(-50%, -50%) rotate(-2deg); border-color: var(--ink); }
+.tc:nth-child(3) { transform: translate(-50%, -50%) rotate(11deg) translateX(30%); }
+@media (prefers-reduced-motion: no-preference) {
+  .tc { transition: transform 300ms ease; }
+  .stack:hover .tc:nth-child(1) { transform: translate(-50%, -50%) rotate(-18deg) translateX(-44%); }
+  .stack:hover .tc:nth-child(3) { transform: translate(-50%, -50%) rotate(15deg) translateX(40%); }
+}
+
+/* Card back: how it works */
+.cardback {
+  background: var(--stock); border: 2px solid var(--ink); border-radius: var(--radius);
+  max-width: 54rem; overflow: hidden;
+}
+.cardback-head {
+  display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; flex-wrap: wrap;
+  background: var(--ink); color: var(--paper); padding: 0.6rem 1rem;
+  font-family: var(--display); font-weight: 700; text-transform: uppercase; font-size: 1.15rem; letter-spacing: 0.04em;
+}
+.cardback-head span:last-child { font-family: var(--mono); font-weight: 500; font-size: 0.75rem; letter-spacing: 0.06em; opacity: 0.85; }
+.cardback-scroll { overflow-x: auto; }
+.cardback table { width: 100%; border-collapse: collapse; font-size: var(--step-0); }
+.cardback th {
+  font-family: var(--mono); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em;
+  text-align: left; color: var(--muted); font-weight: 500; padding: 0.6rem 1rem; border-bottom: 1px solid var(--line);
+}
+.cardback td { padding: 1rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+.cardback tr:last-child td { border-bottom: 0; }
+.cardback td:first-child { font-family: var(--mono); font-weight: 600; color: var(--red); width: 3.5rem; font-variant-numeric: tabular-nums; }
+.cardback td strong { display: block; font-family: var(--display); text-transform: uppercase; font-size: 1.15rem; letter-spacing: 0.02em; }
+.cardback-foot { padding: 0.75rem 1rem; border-top: 1px solid var(--line); font-size: var(--step--1); color: var(--muted); }
+
+/* What we buy */
+.buys { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr)); gap: 0; border-top: 1px solid var(--line); }
+.buy { padding: 1.25rem 1.25rem 1.25rem 0; border-bottom: 1px solid var(--line); display: grid; gap: 0.35rem; align-content: start; min-width: 0; }
+.buy h3 { display: flex; gap: 0.5rem; align-items: baseline; }
+.buy h3::before { content: ""; flex: none; width: 0.6rem; height: 0.85rem; border: 2px solid var(--red); border-radius: 2px; transform: translateY(1px); }
+.buy p { color: var(--muted); }
+.note { margin-top: 1.25rem; font-size: var(--step--1); color: var(--muted); max-width: var(--measure); }
+
+/* Photo tips */
+.tips { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr)); gap: 1.5rem; }
+.tip { display: grid; gap: 0.4rem; min-width: 0; }
+.tip-kind { font-family: var(--mono); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+
+/* Form */
+.sell { background: var(--ink); color: var(--paper); }
+.sell .section-head h2, .sell .lede { color: var(--paper); }
+.sell .lede { opacity: 0.85; }
+.sell .eyebrow { color: var(--paper); opacity: 0.75; }
+.sell-grid { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: clamp(2rem, 5vw, 4rem); align-items: start; }
+.sell-aside { display: grid; gap: 1rem; min-width: 0; }
+.sell-aside ul { margin: 0; padding-left: 1.1rem; display: grid; gap: 0.4rem; }
+form.seller {
+  background: var(--stock); color: var(--ink); border-radius: var(--radius); padding: clamp(1.25rem, 3vw, 2rem);
+  display: grid; gap: 1.1rem; min-width: 0;
+}
+.row { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr)); gap: 1rem; }
+.field { display: grid; gap: 0.35rem; min-width: 0; }
+.field label, .field legend { font-weight: 600; font-size: var(--step--1); }
+.field .hint { font-size: 0.8rem; color: var(--muted); font-weight: 400; }
+input[type="text"], input[type="email"], input[type="tel"], input[type="number"], select, textarea {
+  width: 100%; font: inherit; color: var(--ink); background: var(--paper);
+  border: 1px solid var(--line); border-radius: var(--radius); padding: 0.6rem 0.7rem;
+}
+textarea { min-height: 7rem; resize: vertical; }
+fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
+.checks { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.check {
+  display: inline-flex; align-items: center; gap: 0.4rem; border: 1px solid var(--line); border-radius: 999px;
+  padding: 0.3rem 0.75rem; font-size: var(--step--1); background: var(--paper); cursor: pointer;
+}
+.check input { accent-color: var(--red); }
+.drop {
+  border: 2px dashed var(--line); border-radius: var(--radius); padding: 1.25rem; text-align: center;
+  display: grid; gap: 0.5rem; justify-items: center; background: var(--paper);
+}
+.drop.is-over { border-color: var(--red); }
+.drop input[type="file"] { max-width: 100%; font-size: var(--step--1); }
+.thumbs { display: grid; grid-template-columns: repeat(auto-fill, minmax(4.5rem, 1fr)); gap: 0.5rem; width: 100%; }
+.thumbs img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 4px; border: 1px solid var(--line); }
+.consent { display: flex; gap: 0.6rem; align-items: flex-start; font-size: var(--step--1); }
+.consent input { margin-top: 0.3rem; accent-color: var(--red); flex: none; }
+.fineprint { font-size: 0.8rem; color: var(--muted); }
+.form-status { font-weight: 600; }
+.form-status.is-error { color: var(--red); }
+.hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+
+/* FAQ */
+.faq { display: grid; gap: 0; max-width: 54rem; border-top: 1px solid var(--line); }
+.faq details { border-bottom: 1px solid var(--line); padding: 1rem 0; }
+.faq summary { cursor: pointer; font-weight: 700; font-size: var(--step-1); list-style: none; display: flex; justify-content: space-between; gap: 1rem; }
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after { content: "+"; font-family: var(--mono); color: var(--red); font-weight: 600; }
+.faq details[open] summary::after { content: "\2212"; }
+.faq details p { margin-top: 0.6rem; color: var(--muted); max-width: var(--measure); }
+
+/* Contact and footer */
+.contact { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr)); gap: 1.5rem; }
+.contact div { display: grid; gap: 0.25rem; min-width: 0; overflow-wrap: anywhere; }
+.contact dt { font-family: var(--mono); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+.contact dd { margin: 0; font-size: var(--step-1); font-weight: 600; }
+.site-footer { border-top: 1px solid var(--line); font-size: var(--step--1); color: var(--muted); }
+.site-footer .wrap { display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; padding-block: 1.5rem; }
+.site-footer nav { display: flex; gap: 1rem; }
+
+/* Plain pages */
+.prose { max-width: var(--measure); display: grid; gap: 1rem; }
+.prose h1 { font-size: var(--step-3); }
+.prose h2 { font-size: var(--step-2); margin-top: 1rem; }
+.prose blockquote { margin: 0; padding-left: 1rem; border-left: 3px solid var(--red); color: var(--muted); }
+
+.preview-banner {
+  background: var(--todo-bg); color: var(--todo-ink); font-size: var(--step--1); font-weight: 600;
+}
+.preview-banner .wrap { padding-block: 0.5rem; }
+
+@media (max-width: 52rem) {
+  .hero .wrap, .sell-grid { grid-template-columns: minmax(0, 1fr); }
+  .stack { height: 17rem; }
+  .tc { width: 9rem; }
+}
+
+</style>
+
+<div class="preview-banner" role="note">
+  <div class="wrap">Preview. Yellow brackets are facts only you can fill in. The form does not send anything here.</div>
+</div>
+<header class="site-header">
+  <div class="wrap">
+    <a class="wordmark" href="#top" aria-label="Your Card Buyer home">
+      <span class="wordmark-chip" aria-hidden="true"></span>
+      <span class="wordmark-text">Your Card Buyer</span>
+    </a>
+    <nav class="nav" aria-label="Main">
+      <a href="#how">How it works</a>
+      <a href="#buy">What we buy</a>
+      <a href="#faq">Questions</a>
+      <a class="button button-small" href="#sell">Get an offer</a>
+    </nav>
+  </div>
+</header>
+<main id="top">
+
+<section class="hero section">
+  <div class="wrap">
+    <div class="hero-copy">
+      <p class="eyebrow">Sports card buyer</p>
+      <h1>Sell your sports cards without listing a single one</h1>
+      <p class="lede">Send photos of a few cards or a whole collection. You get a straight offer, and you decide whether to take it.</p>
+      <div class="hero-actions">
+        <a class="button" href="#sell">Get an offer</a>
+        <a href="#how">See how it works</a>
+      </div>
+      <p class="hero-note">Free to ask. No obligation to sell. Reply <mark class="todo">[reply time, e.g. within one business day]</mark>.</p>
+    </div>
+    <div class="stack" aria-hidden="true">
+      <div class="tc"><div class="tc-photo"></div><div class="tc-plate">Vintage<small>Any era</small></div></div>
+      <div class="tc"><div class="tc-photo"></div><div class="tc-plate">Your cards<small>Raw or graded</small></div></div>
+      <div class="tc"><div class="tc-photo"></div><div class="tc-plate">Rookies<small>Singles to lots</small></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="how">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow">How it works</p>
+      <h2>Four steps, start to paid</h2>
+    </div>
+    <div class="cardback">
+      <div class="cardback-head"><span>How it works</span><span>No cost to ask</span></div>
+      <div class="cardback-scroll">
+        <table>
+          <thead><tr><th scope="col">Step</th><th scope="col">What happens</th><th scope="col">Who</th></tr></thead>
+          <tbody>
+            <tr><td>01</td><td><strong>Send photos</strong>Use the form on this page. A few clear photos and a short description are enough to start.</td><td>You</td></tr>
+            <tr><td>02</td><td><strong>We look them over</strong>Every submission is reviewed and priced against recent sales of the same cards.</td><td>Us</td></tr>
+            <tr><td>03</td><td><strong>You get an offer</strong>Reply <mark class="todo">[reply time, e.g. within one business day]</mark>. Take it or pass, with no pressure either way.</td><td>You decide</td></tr>
+            <tr><td>04</td><td><strong>Hand off and get paid</strong><mark class="todo">[in person, by mail, or both]</mark> Payment by <mark class="todo">[payment methods]</mark>.</td><td>Both</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="cardback-foot">If the cards in hand do not match the photos, the offer is revisited before anything changes hands.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="buy">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow">What we buy</p>
+      <h2>From one card to a basement full</h2>
+    </div>
+    
+<div class="buys">
+  <div class="buy"><h3>Baseball, football, basketball and hockey</h3><p>Singles, team sets and full collections from any era.</p></div>
+  <div class="buy"><h3>Vintage cards</h3><p>Pre-1980 cards, including well-loved ones with soft corners.</p></div>
+  <div class="buy"><h3>Modern cards</h3><p>Rookies, autos, numbered parallels, patches and other hits.</p></div>
+  <div class="buy"><h3>Graded slabs</h3><p>PSA, BGS, SGC and CGC. Photos of the front and back of the label are enough to start.</p></div>
+  <div class="buy"><h3>Unopened product</h3><p>Sealed hobby and retail boxes, packs and cases.</p></div>
+  <div class="buy"><h3>Whole collections</h3><p>Binders, monster boxes and inherited collections, sorted or not.</p></div>
+</div>
+<p class="note"><mark class="todo">[Clint: strike any line above you do not buy, and add any you do]</mark></p>
+<p class="note"><mark class="todo">[minimum collection size or value, if any]</mark></p>
+  </div>
+</section>
+
+<section class="section" id="photos">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow">Before you send</p>
+      <h2>Photos that get a better offer</h2>
+      <p class="muted">An offer can only account for what the photos show. Condition drives price, so show it.</p>
+    </div>
+    <div class="tips">
+      <div class="tip"><p class="tip-kind">Singles and slabs</p><p>Front and back of the cards that matter most. On a slab, the label and cert number should be readable.</p></div>
+      <div class="tip"><p class="tip-kind">Binders and boxes</p><p>One wide shot of everything, then a few pages or rows up close so the names and years can be read.</p></div>
+      <div class="tip"><p class="tip-kind">Sealed product</p><p>Every side of the box, including the shrink wrap and any seal stickers.</p></div>
+      <div class="tip"><p class="tip-kind">Light</p><p>Daylight or a bright room, without flash. Glare hides corners, edges and surface wear.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="section sell" id="sell">
+  <div class="wrap">
+    <div class="sell-grid">
+      <div class="sell-aside">
+        <div class="section-head">
+          <p class="eyebrow">Get an offer</p>
+          <h2>Tell us what you have</h2>
+          <p class="lede">The offer is based on your photos and description, so the more you show, the closer it gets.</p>
+        </div>
+        <p>Helpful to include:</p>
+        <ul>
+          <li>Sport, years and sets, if you know them</li>
+          <li>Any players or cards you know are valuable</li>
+          <li>Roughly how many cards there are</li>
+          <li>Which ones are graded, and by whom</li>
+        </ul>
+        <p>Area served: <mark class="todo">[service area]</mark></p>
+      </div>
+
+      <form class="seller" id="seller-form" method="post" action="#sell" enctype="multipart/form-data" novalidate>
+        <div class="row">
+          <div class="field"><label for="f-name">Your name</label><input id="f-name" name="name" type="text" autocomplete="name" required></div>
+          <div class="field"><label for="f-email">Email</label><input id="f-email" name="email" type="email" autocomplete="email" required></div>
+        </div>
+        <div class="row">
+          <div class="field"><label for="f-phone">Phone <span class="hint">(optional)</span></label><input id="f-phone" name="phone" type="tel" autocomplete="tel"></div>
+          <div class="field"><label for="f-zip">ZIP code <span class="hint">(optional)</span></label><input id="f-zip" name="zip" type="text" inputmode="numeric" autocomplete="postal-code" maxlength="10"></div>
+        </div>
+        <div class="row">
+          <div class="field">
+            <label for="f-kind">What are you selling?</label>
+            <select id="f-kind" name="kind" required>
+              <option value="">Choose one</option>
+              <option value="a-few-cards">A few cards</option>
+              <option value="collection">A collection</option>
+              <option value="graded">Graded slabs</option>
+              <option value="sealed">Sealed boxes or packs</option>
+              <option value="mix">A mix</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="f-count">About how many cards?</label>
+            <select id="f-count" name="count">
+              <option value="unsure">Not sure</option>
+              <option value="under-50">Under 50</option>
+              <option value="50-500">50 to 500</option>
+              <option value="500-5000">500 to 5,000</option>
+              <option value="over-5000">More than 5,000</option>
+            </select>
+          </div>
+        </div>
+        <fieldset class="field">
+          <legend>Sports <span class="hint">(pick any)</span></legend>
+          <div class="checks">
+            <label class="check"><input type="checkbox" name="sports" value="baseball" id="f-sport-baseball"> Baseball</label>
+            <label class="check"><input type="checkbox" name="sports" value="football" id="f-sport-football"> Football</label>
+            <label class="check"><input type="checkbox" name="sports" value="basketball" id="f-sport-basketball"> Basketball</label>
+            <label class="check"><input type="checkbox" name="sports" value="hockey" id="f-sport-hockey"> Hockey</label>
+            <label class="check"><input type="checkbox" name="sports" value="soccer" id="f-sport-soccer"> Soccer</label>
+            <label class="check"><input type="checkbox" name="sports" value="other" id="f-sport-other"> Other</label>
+          </div>
+        </fieldset>
+        <div class="field">
+          <label for="f-desc">Describe the cards</label>
+          <textarea id="f-desc" name="description" required placeholder="Example: a binder of 1980s Topps baseball, a shoebox of 90s football, two PSA slabs."></textarea>
+        </div>
+        <div class="field">
+          <label for="f-asking">Have a price in mind? <span class="hint">(optional)</span></label>
+          <input id="f-asking" name="asking" type="text" placeholder="Leave blank if you want an offer first">
+        </div>
+        <div class="field">
+          <label for="f-photos">Photos <span class="hint">(up to 12)</span></label>
+          <div class="drop" id="drop">
+            <input id="f-photos" name="photos" type="file" accept="image/*" multiple>
+            <span class="hint">Drag photos here or choose them from your phone or computer.</span>
+            <div class="thumbs" id="thumbs"></div>
+          </div>
+        </div>
+        <label class="consent"><input type="checkbox" name="sms_consent" value="yes" id="f-sms"> <span>You may text me about my cards at the number above. Message and data rates may apply. Reply STOP to opt out.</span></label>
+        <div class="hp" aria-hidden="true"><label for="f-website">Website</label><input id="f-website" name="website" type="text" tabindex="-1" autocomplete="off"></div>
+        <input type="hidden" name="form_loaded_at" id="f-loaded" value="">
+        <input type="hidden" name="redirect_to" value="/thank-you/">
+        <p class="fineprint">By sending this form you agree that Your Card Buyer may call or email you about the cards you described. See the <a href="#privacy">privacy policy</a>.</p>
+        <button class="button" type="submit" id="f-submit">Send for an offer</button>
+        <p class="form-status" id="f-status" role="status" aria-live="polite"></p>
+      </form>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="faq">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow">Questions</p>
+      <h2>Before you send anything</h2>
+    </div>
+    <div class="faq">
+      <details><summary>Do I have to sell if I ask for an offer?</summary><p>No. Asking costs nothing, and the offer is yours to take or turn down.</p></details>
+      <details><summary>How do you decide what to offer?</summary><p>Offers are based on what the same cards in similar condition have recently sold for. Photos of the front, back and corners are what that judgment is made from.</p></details>
+      <details><summary>Do my cards need to be graded?</summary><p>No. Raw cards are fine. If some are in slabs, include a photo of each label.</p></details>
+      <details><summary>How do I get paid?</summary><p>Payment by <mark class="todo">[payment methods]</mark>.</p></details>
+      <details><summary>Do you buy in person or by mail?</summary><p><mark class="todo">[in person, by mail, or both]</mark></p></details>
+      <details><summary>How long until I hear back?</summary><p>You hear back <mark class="todo">[reply time, e.g. within one business day]</mark>.</p></details>
+      <details><summary>Is there a minimum?</summary><p><mark class="todo">[minimum, or say there is none]</mark></p></details>
+      <details><summary>What happens to my photos and information?</summary><p>They are used to look at your cards and to contact you about them. They are not sold or shared for marketing. The privacy page has the details.</p></details>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="who">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow">Who is buying</p>
+      <h2>Who you are dealing with</h2>
+      <p><mark class="todo">[Clint: your name and one line about you, or say keep the site brand-only]</mark></p>
+    </div>
+    <dl class="contact">
+      <div><dt>Phone</dt><dd><mark class="todo">[phone]</mark></dd></div>
+      <div><dt>Email</dt><dd><mark class="todo">[email]</mark></dd></div>
+      <div><dt>Area</dt><dd><mark class="todo">[service area]</mark></dd></div>
+    </dl>
+  </div>
+</section>
+<hr style="border:0;border-top:1px solid var(--line);margin:0">
+<div class="wrap" style="padding-block:1rem"><p class="eyebrow">Separate pages on the live site</p></div>
+
+<section class="section" id="privacy">
+  <div class="wrap prose">
+    <h1>Privacy Policy</h1>
+    <p class="muted">Last updated October 2026</p>
+    <h2>What we collect</h2>
+    <p>When you ask for an offer we collect what you send: your name, email address, phone number and ZIP code if you give them, your description of the cards, any price you name, and the photos you upload. Our hosting provider records basic technical information, such as the type of browser that loaded a page. We do not use it to identify you.</p>
+    <p>We never ask for bank or card numbers through this site, and you should not send them.</p>
+    <h2>What we do with it</h2>
+    <p>We use your submission to look at your cards, make an offer, and contact you about it. We do not sell your information or share it for anyone else's marketing.</p>
+    <p>This is the consent shown above the button on the form:</p>
+    <blockquote>By sending this form you agree that Your Card Buyer may call or email you about the cards you described.</blockquote>
+    <p>Texting is separate. We only text you if you tick the box that says: "You may text me about my cards at the number above. Message and data rates may apply. Reply STOP to opt out." Reply STOP to any text and we stop.</p>
+    <h2>Who else handles it</h2>
+    <p>Submissions and photos are stored in our customer management system, which a software company runs for us, and the site is hosted by a web hosting company. Both handle your information only to provide that service to us.</p>
+    <h2>How long we keep it</h2>
+    <p>We keep submissions while they are useful for the offer and our purchase records, and delete them when they are not. You can ask us to delete yours at any time.</p>
+    <h2>Your choices</h2>
+    <p>You can ask what we hold about you, ask us to correct or delete it, or tell us to stop contacting you. Reply to any message from us, or use the contact details on the home page.</p>
+    <h2>Who we are</h2>
+    <p>This site is operated by <mark class="todo">[operating entity legal name]</mark>.</p>
+  </div>
+</section>
+
+<section class="section" id="terms">
+  <div class="wrap prose">
+    <h1>Terms of Use</h1>
+    <p class="muted">Last updated October 2026</p>
+    <h2>Offers</h2>
+    <p>Sending the form is a request for an offer, not a sale. An offer is based on the photos and description you send. Nothing is bought or sold until you and <mark class="todo">[operating entity legal name]</mark> agree on a price and how the cards change hands.</p>
+    <p>If the cards are different from the photos or description when we see them in hand, for example in condition, count or authenticity, the offer may change or be withdrawn, and you are free to keep your cards.</p>
+    <h2>What you send</h2>
+    <p>By sending the form you confirm that the cards are yours to sell, or that you are authorized to sell them for their owner.</p>
+    <h2>Information on the site</h2>
+    <p>The pages describe how we buy cards in general terms. They are not an appraisal, and no figure on this site is a quote for your cards.</p>
+    <h2>Changes</h2>
+    <p>We may update these terms. The version on this page is the one that applies.</p>
+    <h2>Governing law</h2>
+    <p>These terms are governed by the laws of <mark class="todo">[state]</mark>.</p>
+  </div>
+</section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>&copy; 2026 <mark class="todo">[operating entity legal name]</mark></p>
+    <nav aria-label="Legal">
+      <a href="#privacy">Privacy</a>
+      <a href="#terms">Terms</a>
+    </nav>
+  </div>
+</footer>
+<script>
+/*
+ * The seller form, progressively enhanced.
+ *
+ * Without script the form posts straight to /api/sell with the original photos.
+ * With script, each photo is shrunk to at most 2000px on its long side as a
+ * JPEG before upload: a phone photo drops from several megabytes to a few
+ * hundred kilobytes, which matters on a weak signal and keeps the Worker well
+ * inside its request limits. A photo the browser cannot decode (HEIC outside
+ * Safari, for instance) is sent as it is.
+ */
+(function () {
+  var MAX_PHOTOS = 12;
+  var MAX_EDGE = 2000;
+  var PREVIEW = true;
+
+  var form = document.getElementById('seller-form');
+  if (!form) return;
+  var input = document.getElementById('f-photos');
+  var thumbs = document.getElementById('thumbs');
+  var drop = document.getElementById('drop');
+  var status = document.getElementById('f-status');
+  var button = document.getElementById('f-submit');
+  var loaded = document.getElementById('f-loaded');
+  if (loaded) loaded.value = String(Date.now());
+
+  var chosen = [];
+
+  function say(text, isError) {
+    status.textContent = text;
+    status.classList.toggle('is-error', !!isError);
+  }
+
+  function render() {
+    thumbs.innerHTML = '';
+    chosen.forEach(function (file) {
+      if (!/^image\//.test(file.type)) return;
+      var img = document.createElement('img');
+      img.alt = file.name;
+      img.src = URL.createObjectURL(file);
+      img.onload = function () { URL.revokeObjectURL(img.src); };
+      thumbs.appendChild(img);
+    });
+  }
+
+  function add(files) {
+    var list = Array.prototype.slice.call(files || []);
+    list.forEach(function (f) {
+      if (chosen.length < MAX_PHOTOS) chosen.push(f);
+    });
+    if (list.length && chosen.length >= MAX_PHOTOS) say('Up to ' + MAX_PHOTOS + ' photos. Extra photos were left off.', false);
+    render();
+  }
+
+  input.addEventListener('change', function () { chosen = []; add(input.files); });
+  ['dragenter', 'dragover'].forEach(function (t) {
+    drop.addEventListener(t, function (e) { e.preventDefault(); drop.classList.add('is-over'); });
+  });
+  ['dragleave', 'drop'].forEach(function (t) {
+    drop.addEventListener(t, function (e) { e.preventDefault(); drop.classList.remove('is-over'); });
+  });
+  drop.addEventListener('drop', function (e) { add(e.dataTransfer && e.dataTransfer.files); });
+
+  function shrink(file) {
+    if (!window.createImageBitmap || !/^image\//.test(file.type)) return Promise.resolve(file);
+    return createImageBitmap(file).then(function (bmp) {
+      var scale = Math.min(1, MAX_EDGE / Math.max(bmp.width, bmp.height));
+      var canvas = document.createElement('canvas');
+      canvas.width = Math.round(bmp.width * scale);
+      canvas.height = Math.round(bmp.height * scale);
+      canvas.getContext('2d').drawImage(bmp, 0, 0, canvas.width, canvas.height);
+      return new Promise(function (resolve) {
+        canvas.toBlob(function (blob) {
+          if (!blob) return resolve(file);
+          var name = file.name.replace(/\.[^.]+$/, '') + '.jpg';
+          resolve(new File([blob], name, { type: 'image/jpeg' }));
+        }, 'image/jpeg', 0.85);
+      });
+    }).catch(function () { return file; });
+  }
+
+  function missing() {
+    var bad = [];
+    if (!form.name.value.trim()) bad.push('your name');
+    var email = form.email.value.trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) bad.push('an email address');
+    if (!form.kind.value) bad.push('what you are selling');
+    if (!form.description.value.trim()) bad.push('a short description');
+    return bad;
+  }
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var bad = missing();
+    if (bad.length) { say('Please add ' + bad.join(', ') + '.', true); return; }
+
+    if (PREVIEW) {
+      say('Preview only. On the live site this would send your details and ' + chosen.length + ' photo' + (chosen.length === 1 ? '' : 's') + ' to Your Card Buyer.', false);
+      return;
+    }
+
+    button.disabled = true;
+    say(chosen.length ? 'Preparing photos...' : 'Sending...', false);
+
+    Promise.all(chosen.map(shrink)).then(function (files) {
+      var data = new FormData(form);
+      data.delete('photos');
+      files.forEach(function (f) { data.append('photos', f, f.name); });
+      data.set('client', 'script');
+      say('Sending...', false);
+      return fetch(form.action, { method: 'POST', body: data, headers: { accept: 'application/json' } });
+    }).then(function (res) {
+      return res.json().catch(function () { return {}; }).then(function (body) {
+        if (!res.ok) throw new Error(body.error || 'Request failed');
+        var next = '/thank-you/' + (body.photos === 'missing' ? '?photos=missing' : '');
+        window.location.assign(next);
+      });
+    }).catch(function () {
+      button.disabled = false;
+      say('That did not go through. Check your connection and try again.', true);
+    });
+  });
+})();
+
+</script>
